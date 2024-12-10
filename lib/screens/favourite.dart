@@ -10,7 +10,7 @@ class Favourite extends StatelessWidget {
         preferredSize: const Size.fromHeight(80.0),
         child: AppBar(
           title: const Text(
-            'FAVOURITE',  // Changed title here
+            'FAVOURITE', // Changed title here
             style: TextStyle(
               fontWeight: FontWeight.w900,
               color: Color(0xFF3669C9),
@@ -40,7 +40,8 @@ class Favourite extends StatelessWidget {
                   border: InputBorder.none,
                   filled: true,
                   fillColor: const Color(0xFFF2F2F2),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
@@ -70,7 +71,8 @@ class Favourite extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE5E5E5), width: 2),
+                      border:
+                          Border.all(color: const Color(0xFFE5E5E5), width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
@@ -87,10 +89,10 @@ class Favourite extends StatelessWidget {
                           // Title and Icon Row
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Text(
                                   'British Short Hair',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),

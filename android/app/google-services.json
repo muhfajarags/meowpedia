@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "399396331071",
+    "project_id": "meowpedia-a8bfe",
+    "storage_bucket": "meowpedia-a8bfe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399396331071:android:36191fa5ec10aefaec628a",
+        "android_client_info": {
+          "package_name": "com.example.meowpedia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWVqFv2_j2wFo-z2FsqUtGlO4EtdYDVRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

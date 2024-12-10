@@ -1,12 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meowpedia/firebase_options.dart';
 import 'screens/Home.dart'; // Import the Home screen
 import 'screens/Favourite.dart'; // Import the Favourite screen
 import 'screens/Profile.dart'; // Import the Profile screen
 import 'screens/login.dart'; // Import the Login screen
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,9 +30,11 @@ class MyApp extends StatelessWidget {
         future: checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else {
-            return snapshot.data == true ? MainScreen() : LoginScreen();
+            return snapshot.data == true
+                ? const MainScreen()
+                : const LoginScreen();
           }
         },
       ),
@@ -34,8 +42,8 @@ class MyApp extends StatelessWidget {
   }
 
   Future<bool> checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
+    final User? user = FirebaseAuth.instance.currentUser;
+    return user != null;
   }
 }
 
@@ -51,9 +59,9 @@ class _MainScreenState extends State<MainScreen> {
 
   // List of screens to display without 'const'
   final List<Widget> _screens = [
-    Home(),       // Home screen
-    Favourite(),  // Favourite screen
-    Profile(),    // Profile screen
+    Home(), // Home screen
+    const Favourite(), // Favourite screen
+    const Profile(), // Profile screen
   ];
 
   void _onItemTapped(int index) {

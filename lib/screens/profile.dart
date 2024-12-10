@@ -1,16 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meowpedia/screens/login.dart';
+
+void _logout(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Logout failed. Please try again.')),
+    );
+  }
+}
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Fallback values if the user is null (not logged in)
+    final String fullName = user?.displayName ?? 'Anonymous User';
+    final String email = user?.email ?? 'No Email';
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: AppBar(
           title: const Text(
-            'PROFILE',  // Changed title here
+            'PROFILE',
             style: TextStyle(
               fontWeight: FontWeight.w900,
               color: Color(0xFF3669C9),
@@ -26,70 +49,82 @@ class Profile extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Center the image button horizontally
+            // Profile image and edit button
             Center(
               child: Stack(
-                alignment: Alignment.bottomRight, // Align the icon to the bottom right
+                alignment: Alignment.bottomRight,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(40), // Corner radius
+                    borderRadius: BorderRadius.circular(100), // Circle shape
                     child: Material(
-                      elevation: 5, // Optional: Adds a shadow effect
+                      elevation: 5,
                       child: InkWell(
                         onTap: () {
-                          // Handle button press
-                          print('Image button pressed!');
+                          print('Profile image pressed');
                         },
-                        child: Container(
-                          width: 200, // Width of the button
-                          height: 200, // Height of the button
+                        child: SizedBox(
+                          width: 200,
+                          height: 200,
                           child: Image.asset(
-                            'assets/pp.jpg', // Image source
-                            fit: BoxFit.cover, // Cover the button area
+                            'assets/pp.jpg',
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // Pencil icon
                   Container(
-                    margin: const EdgeInsets.all(8.0), // Margin for spacing
+                    margin: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.7), // Background color
+                      color: Colors.black.withOpacity(0.7),
                     ),
                     child: IconButton(
                       icon: const Icon(
-                        Icons.edit, // Pencil icon
-                        color: Colors.white, // Icon color
+                        Icons.edit,
+                        color: Colors.white,
                       ),
                       onPressed: () {
-                        // Handle icon press
-                        print('Edit button pressed!');
+                        print('Edit button pressed');
                       },
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16), // Space between image and text
-            const Center( // Center the text horizontally
-              child: Text(
-                'Muhammad Fajar Agus Saputra', // Title
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+            const SizedBox(height: 16),
+            // Display user full name
+            Text(
+              fullName,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4), // Space between title and subtitle
-            const Center( // Center the subtitle horizontally
-              child: Text(
-                'muhfajarags@gmail.com', // Subtitle
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey, // Subtitle color
+            const SizedBox(height: 4),
+            // Display user email
+            Text(
+              email,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => _logout(context),
+                icon: const Icon(Icons.logout),
+                label: const Text('Logout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3669C9),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ),

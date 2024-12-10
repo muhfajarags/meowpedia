@@ -1,17 +1,24 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meowpedia/screens/login.dart';
 
-void _logout(BuildContext context) async {
+Future<void> _logout(BuildContext context) async {
   try {
+    // Sign out from FirebaseAuth
     await FirebaseAuth.instance.signOut();
+
+    // Disconnect Google account
+    await GoogleSignIn().disconnect();
+
+    // Navigate to LoginScreen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Logout failed. Please try again.')),
+      SnackBar(content: Text('Logout failed: $e')),
     );
   }
 }

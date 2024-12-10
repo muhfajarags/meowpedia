@@ -27,10 +27,15 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _signInWithGoogle() async {
     try {
+      // Force user to pick an account by signing out first
+      await GoogleSignIn().signOut();
+
+      // Start Google sign-in
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         return; // User canceled the sign-in
       }
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
@@ -39,8 +44,10 @@ class _SignupScreenState extends State<SignupScreen> {
         idToken: googleAuth.idToken,
       );
 
+      // Authenticate with Firebase
       await FirebaseAuth.instance.signInWithCredential(credential);
 
+      // Navigate to the main screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),

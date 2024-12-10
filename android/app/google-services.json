@@ -12,7 +12,12 @@
           "package_name": "com.example.meowpedia"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "399396331071-24ukr5mg1sme38a8hcacjfajt5ni2hqm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBWVqFv2_j2wFo-z2FsqUtGlO4EtdYDVRw"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399396331071-24ukr5mg1sme38a8hcacjfajt5ni2hqm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "399396331071-d6infk1dj98v92e80fo3eafokrc4cgbn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.meowpedia"
+              }
+            }
+          ]
         }
       }
     }

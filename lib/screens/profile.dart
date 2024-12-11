@@ -8,8 +8,11 @@ Future<void> _logout(BuildContext context) async {
     // Sign out from FirebaseAuth
     await FirebaseAuth.instance.signOut();
 
-    // Disconnect Google account
-    await GoogleSignIn().disconnect();
+    // Disconnect Google account if it was signed in
+    final googleSignIn = GoogleSignIn();
+    if (await googleSignIn.isSignedIn()) {
+      await googleSignIn.disconnect();
+    }
 
     // Navigate to LoginScreen
     Navigator.pushReplacement(

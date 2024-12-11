@@ -26,36 +26,48 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      if (e.code == 'user-not-found') {
-        errorMessage = 'Email tidak terdaftar';
-      } else if (e.code == 'wrong-password') {
-        errorMessage = 'Password salah';
-      } else {
-        errorMessage = 'Terjadi kesalahan';
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'Email not registered. Please sign up first.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+        default:
+          errorMessage = 'An error occurred: ${e.message}';
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed. Please try again.')),
       );
     }
   }
 
   Future<void> _signInWithGoogle() async {
     try {
-      // Ensure the user is prompted to pick an account
-      await GoogleSignIn().signOut();
-
-      // Start Google sign-in
+      await GoogleSignIn().signOut(); // Ensure fresh Google sign-in
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
       if (googleUser == null) {
         return; // User canceled the sign-in
       }
@@ -63,32 +75,28 @@ class _LoginScreenState extends State<LoginScreen> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
+      final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Extract the email from the Google user
-      final String? email = googleUser.email;
-
-      // Check if the email is already registered in Firebase
+      // Check if the email is registered with Firebase
+      final String email = googleUser.email;
       final List<String> signInMethods =
-          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email!);
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
 
-      if (signInMethods.isEmpty) {
-        // If no sign-in methods exist, the user is not registered
+      if (!signInMethods.contains(GoogleAuthProvider.PROVIDER_ID)) {
+        // If Google is not an allowed sign-in method, show an error
         await GoogleSignIn().disconnect();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'Account does not exist. Please sign up first.',
-            ),
+            content: Text('Account does not exist for Google Sign-In.'),
           ),
         );
         return;
       }
 
-      // Authenticate with Firebase using the Google credential
+      // Sign in to Firebase with Google credentials
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       // Navigate to the main screen
@@ -116,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google login failed.')),
+        const SnackBar(content: Text('Google login failed. Please try again.')),
       );
     }
   }

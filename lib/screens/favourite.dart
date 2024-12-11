@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../main.dart';
 
-class Favourite extends StatelessWidget {
+class Favourite extends StatefulWidget {
   const Favourite({super.key});
 
   @override
+  _FavouriteState createState() => _FavouriteState();
+}
+
+class _FavouriteState extends State<Favourite> {
+  String searchQuery = '';
+
+  @override
   Widget build(BuildContext context) {
+    final lovedCats = Provider.of<CatProvider>(context).lovedCats;
+    final filteredCats = lovedCats
+        .where((cat) => cat['name']
+        .toLowerCase()
+        .contains(searchQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
@@ -23,13 +39,29 @@ class Favourite extends StatelessWidget {
           shadowColor: Colors.black.withOpacity(0.1),
         ),
       ),
-      body: SingleChildScrollView(
+      body: lovedCats.isEmpty
+          ? const Center(
+        child: Text(
+          'No favourites yet.',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey,
+          ),
+        ),
+      )
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // Search bar
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Search Cat Breeds',
                   hintStyle: const TextStyle(
@@ -40,8 +72,8 @@ class Favourite extends StatelessWidget {
                   border: InputBorder.none,
                   filled: true,
                   fillColor: const Color(0xFFF2F2F2),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 16),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
@@ -57,22 +89,34 @@ class Favourite extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Grid of cards
-              GridView.builder(
+              filteredCats.isEmpty
+                  ? const Center(
+                child: Text(
+                  "We couldn't find any results. Try a different search.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+                  : GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // 2 columns
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 156 / 199, // Adjust this as needed
                 ),
-                itemCount: 2, // Number of cards
+                itemCount: filteredCats.length, // Number of cards
                 itemBuilder: (context, index) {
+                  final cat = filteredCats[index];
                   return Container(
                     decoration: BoxDecoration(
-                      border:
-                          Border.all(color: const Color(0xFFE5E5E5), width: 2),
+                      border: Border.all(
+                          color: const Color(0xFFE5E5E5), width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Padding(
@@ -81,7 +125,7 @@ class Favourite extends StatelessWidget {
                         children: [
                           // Cat image
                           Image.asset(
-                            'assets/cat.png', // Replace with your asset path
+                            cat['image'], // Replace with your asset path
                             width: 130,
                             height: 130,
                           ),
@@ -89,10 +133,10 @@ class Favourite extends StatelessWidget {
                           // Title and Icon Row
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  'British Short Hair',
-                                  style: TextStyle(
+                                  cat['name'],
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -110,11 +154,11 @@ class Favourite extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           // Subtitle
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Inggris',
-                              style: TextStyle(
+                              cat['origin'],
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF3669C9),

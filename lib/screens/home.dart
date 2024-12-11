@@ -1,59 +1,26 @@
 import 'package:flutter/material.dart';
-import 'detail_info.dart';
+import 'package:provider/provider.dart';
+import '../main.dart'; // Ensure the path to main.dart is correct
 
-class Home extends StatelessWidget {
-  final List<Map<String, String>> catBreeds = [
-    {
-      'name': 'British Short Hair',
-      'origin': 'Inggris',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Persian',
-      'origin': 'Iran',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Siamese',
-      'origin': 'Thailand',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Maine Coon',
-      'origin': 'Amerika Serikat',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Ragdoll',
-      'origin': 'Amerika Serikat',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Bengal',
-      'origin': 'Amerika Serikat',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Sphynx',
-      'origin': 'Kanada',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Scottish Fold',
-      'origin': 'Skotlandia',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-    {
-      'name': 'Norwegian Forest Cat',
-      'origin': 'Norwegia',
-      'image': 'assets/cat.png', // Update the image path as necessary
-    },
-  ];
+class Home extends StatefulWidget {
+  const Home({super.key});
 
-  Home({super.key});
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
+    final catProvider = Provider.of<CatProvider>(context);
+    final filteredCats = catProvider.catBreeds
+        .where((cat) => cat['name']
+        .toLowerCase()
+        .contains(searchQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
@@ -77,7 +44,13 @@ class Home extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              // Search bar
               TextField(
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Search Cat Breeds',
                   hintStyle: const TextStyle(
@@ -88,8 +61,8 @@ class Home extends StatelessWidget {
                   border: InputBorder.none,
                   filled: true,
                   fillColor: const Color(0xFFF2F2F2),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 16),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
@@ -105,7 +78,18 @@ class Home extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              GridView.builder(
+              filteredCats.isEmpty
+                  ? const Center(
+                child: Text(
+                  "We couldn't find any results. Try a different search.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+                  : GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -114,20 +98,13 @@ class Home extends StatelessWidget {
                   mainAxisSpacing: 8,
                   childAspectRatio: 156 / 199,
                 ),
-                itemCount: catBreeds.length,
+                itemCount: filteredCats.length,
                 itemBuilder: (context, index) {
-                  final breed = catBreeds[index];
+                  final cat = filteredCats[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailInfo(
-                            title: breed['name']!,
-                            subtitle: breed['origin']!,
-                          ),
-                        ),
-                      );
+                      catProvider.toggleLovedStatus(
+                          catProvider.catBreeds.indexOf(cat));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -140,7 +117,7 @@ class Home extends StatelessWidget {
                         child: Column(
                           children: [
                             Image.asset(
-                              breed['image']!,
+                              cat['image'],
                               width: 130,
                               height: 130,
                             ),
@@ -149,7 +126,7 @@ class Home extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    breed['name']!,
+                                    cat['name'],
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -157,12 +134,13 @@ class Home extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 17,
-                                  height: 15,
-                                  child: Image.asset(
-                                    'assets/unlove.png',
-                                  ),
+                                Icon(
+                                  cat['isLoved']
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: cat['isLoved']
+                                      ? Colors.red
+                                      : Colors.grey,
                                 ),
                               ],
                             ),
@@ -170,7 +148,7 @@ class Home extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                breed['origin']!,
+                                cat['origin'],
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,

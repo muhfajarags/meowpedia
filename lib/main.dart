@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:meowpedia/firebase_options.dart';
+import 'package:provider/provider.dart';
 import 'screens/Home.dart'; // Import the Home screen
 import 'screens/Favourite.dart'; // Import the Favourite screen
 import 'screens/Profile.dart'; // Import the Profile screen
@@ -17,7 +18,79 @@ Future<void> main() async {
   );
 
   // Run the app
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CatProvider(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class CatProvider with ChangeNotifier {
+  final List<Map<String, dynamic>> catBreeds = [
+    {
+      'name': 'British Short Hair',
+      'origin': 'Inggris',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Persian',
+      'origin': 'Iran',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Siamese',
+      'origin': 'Thailand',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Maine Coon',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Ragdoll',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Bengal',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Sphynx',
+      'origin': 'Kanada',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Scottish Fold',
+      'origin': 'Skotlandia',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Norwegian Forest Cat',
+      'origin': 'Norwegia',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+  ];
+
+  void toggleLovedStatus(int index) {
+    catBreeds[index]['isLoved'] = !catBreeds[index]['isLoved'];
+    notifyListeners();
+  }
+
+  List<Map<String, dynamic>> get lovedCats =>
+      catBreeds.where((cat) => cat['isLoved']).toList();
 }
 
 class MyApp extends StatelessWidget {

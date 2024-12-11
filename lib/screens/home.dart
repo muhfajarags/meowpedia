@@ -3,52 +3,52 @@ import 'detail_info.dart';
 
 class Home extends StatelessWidget {
   final List<Map<String, String>> catBreeds = [
-  {
-    'name': 'British Short Hair',
-    'origin': 'Inggris',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Persian',
-    'origin': 'Iran',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Siamese',
-    'origin': 'Thailand',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Maine Coon',
-    'origin': 'Amerika Serikat',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Ragdoll',
-    'origin': 'Amerika Serikat',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Bengal',
-    'origin': 'Amerika Serikat',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Sphynx',
-    'origin': 'Kanada',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Scottish Fold',
-    'origin': 'Skotlandia',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-  {
-    'name': 'Norwegian Forest Cat',
-    'origin': 'Norwegia',
-    'image': 'assets/cat.png', // Update the image path as necessary
-  },
-];
+    {
+      'name': 'British Short Hair',
+      'origin': 'Inggris',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Persian',
+      'origin': 'Iran',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Siamese',
+      'origin': 'Thailand',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Maine Coon',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Ragdoll',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Bengal',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Sphynx',
+      'origin': 'Kanada',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Scottish Fold',
+      'origin': 'Skotlandia',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+    {
+      'name': 'Norwegian Forest Cat',
+      'origin': 'Norwegia',
+      'image': 'assets/cat.png', // Update the image path as necessary
+    },
+  ];
 
   Home({super.key});
 
@@ -88,7 +88,8 @@ class Home extends StatelessWidget {
                   border: InputBorder.none,
                   filled: true,
                   fillColor: const Color(0xFFF2F2F2),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
@@ -122,7 +123,7 @@ class Home extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailInfo(
-                            title: breed['name']!, 
+                            title: breed['name']!,
                             subtitle: breed['origin']!,
                           ),
                         ),
@@ -130,7 +131,8 @@ class Home extends StatelessWidget {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFE5E5E5), width: 2),
+                        border: Border.all(
+                            color: const Color(0xFFE5E5E5), width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Padding(

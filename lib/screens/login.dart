@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _signInWithGoogle() async {
     try {
-      // Force user to pick an account by signing out first
+      // Ensure the user is prompted to pick an account
       await GoogleSignIn().signOut();
 
       // Start Google sign-in
@@ -68,7 +68,27 @@ class _LoginScreenState extends State<LoginScreen> {
         idToken: googleAuth.idToken,
       );
 
-      // Authenticate with Firebase
+      // Extract the email from the Google user
+      final String? email = googleUser.email;
+
+      // Check if the email is already registered in Firebase
+      final List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email!);
+
+      if (signInMethods.isEmpty) {
+        // If no sign-in methods exist, the user is not registered
+        await GoogleSignIn().disconnect();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Account does not exist. Please sign up first.',
+            ),
+          ),
+        );
+        return;
+      }
+
+      // Authenticate with Firebase using the Google credential
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       // Navigate to the main screen
@@ -76,9 +96,27 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),
       );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+        case 'operation-not-allowed':
+          errorMessage = 'Google login is not enabled.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Invalid Google credentials.';
+          break;
+        default:
+          errorMessage = 'An error occurred: ${e.message}';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google login failed')),
+        const SnackBar(content: Text('Google login failed.')),
       );
     }
   }

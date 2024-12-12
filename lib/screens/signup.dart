@@ -27,10 +27,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _signInWithGoogle() async {
     try {
-      // Force user to pick an account by signing out first
-      await GoogleSignIn().signOut();
-
-      // Start Google sign-in
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         return; // User canceled the sign-in
@@ -45,16 +41,22 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       // Authenticate with Firebase
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Navigate to the main screen
+      // If new user, update display name and proceed
+      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        await userCredential.user
+            ?.updateDisplayName(googleUser.displayName ?? 'Google User');
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google signup failed')),
+        const SnackBar(content: Text('Google signup failed.')),
       );
     }
   }

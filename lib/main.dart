@@ -6,7 +6,7 @@ import 'screens/Profile.dart'; // Import the Profile screen
 import 'screens/login.dart'; // Import the Login screen
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
         future: checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else {
-            return snapshot.data == true ? MainScreen() : LoginScreen();
+            return snapshot.data == true ? const MainScreen() : LoginScreen();
           }
         },
       ),
@@ -51,9 +51,9 @@ class _MainScreenState extends State<MainScreen> {
 
   // List of screens to display without 'const'
   final List<Widget> _screens = [
-    Home(),       // Home screen
-    Favourite(),  // Favourite screen
-    Profile(),    // Profile screen
+    Home(), // Home screen
+    const Favourite(), // Favourite screen
+    const Profile(), // Profile screen
   ];
 
   void _onItemTapped(int index) {

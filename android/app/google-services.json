@@ -1,41 +1,43 @@
 {
   "project_info": {
-    "project_number": "399396331071",
-    "project_id": "meowpedia-a8bfe",
-    "storage_bucket": "meowpedia-a8bfe.firebasestorage.app"
+    "project_number": "642521484434",
+    "firebase_url": "https://todo-app-b91c9-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "todo-app-b91c9",
+    "storage_bucket": "todo-app-b91c9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:399396331071:android:36191fa5ec10aefaec628a",
+        "mobilesdk_app_id": "1:642521484434:android:3fe82ecb89011870b52a4b",
         "android_client_info": {
           "package_name": "com.example.meowpedia"
         }
       },
       "oauth_client": [
         {
-          "client_id": "399396331071-24ukr5mg1sme38a8hcacjfajt5ni2hqm.apps.googleusercontent.com",
+          "client_id": "642521484434-fa1s12fp7picg1k147h7in6p0at534qb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meowpedia",
+            "certificate_hash": "0624b85782bf07c360f7a18c161b8ad859dbfe77"
+          }
+        },
+        {
+          "client_id": "642521484434-ncenpbkdqm5rt69nraruu85ife347j14.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBWVqFv2_j2wFo-z2FsqUtGlO4EtdYDVRw"
+          "current_key": "AIzaSyANkor_uWOWqxlCXfuUgvgJOS96r6hLZwI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "399396331071-24ukr5mg1sme38a8hcacjfajt5ni2hqm.apps.googleusercontent.com",
+              "client_id": "642521484434-ncenpbkdqm5rt69nraruu85ife347j14.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "399396331071-d6infk1dj98v92e80fo3eafokrc4cgbn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.meowpedia"
-              }
             }
           ]
         }

@@ -15,20 +15,19 @@ dependencies:
   firebase_core: ^3.8.1
   firebase_auth: ^5.3.4
   google_sign_in: ^6.0.1
-  package_info_plus : ^8.1.1
-  
+  package_info_plus: ^8.1.1
+  provider: ^6.0.5 # Added for state management
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.2
-  
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/cat.png  
+    - assets/cat.png
     - assets/unlove.png
     - assets/loved.png
     - assets/pp.jpg

@@ -1,12 +1,96 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meowpedia/firebase_options.dart';
+import 'package:provider/provider.dart';
 import 'screens/Home.dart'; // Import the Home screen
 import 'screens/Favourite.dart'; // Import the Favourite screen
 import 'screens/Profile.dart'; // Import the Profile screen
 import 'screens/login.dart'; // Import the Login screen
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  // Ensure the Flutter binding is initialized before Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Run the app
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CatProvider(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class CatProvider with ChangeNotifier {
+  final List<Map<String, dynamic>> catBreeds = [
+    {
+      'name': 'British Short Hair',
+      'origin': 'Inggris',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Persian',
+      'origin': 'Iran',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Siamese',
+      'origin': 'Thailand',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Maine Coon',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Ragdoll',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Bengal',
+      'origin': 'Amerika Serikat',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Sphynx',
+      'origin': 'Kanada',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Scottish Fold',
+      'origin': 'Skotlandia',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+    {
+      'name': 'Norwegian Forest Cat',
+      'origin': 'Norwegia',
+      'image': 'assets/cat.png',
+      'isLoved': false,
+    },
+  ];
+
+  void toggleLovedStatus(int index) {
+    catBreeds[index]['isLoved'] = !catBreeds[index]['isLoved'];
+    notifyListeners();
+  }
+
+  List<Map<String, dynamic>> get lovedCats =>
+      catBreeds.where((cat) => cat['isLoved']).toList();
 }
 
 class MyApp extends StatelessWidget {
@@ -24,18 +108,27 @@ class MyApp extends StatelessWidget {
         future: checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            return const Scaffold(
+              body: Center(child: Text('Error initializing the app.')),
+            );
           } else {
-            return snapshot.data == true ? const MainScreen() : LoginScreen();
+            return snapshot.data == true
+                ? const MainScreen()
+                : const LoginScreen();
           }
         },
       ),
     );
   }
 
+  /// Check if the user is already logged in
   Future<bool> checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
+    final User? user = FirebaseAuth.instance.currentUser;
+    return user != null;
   }
 }
 
@@ -49,16 +142,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0; // Track the selected index for bottom navigation
 
-  // List of screens to display without 'const'
+  // List of screens to display
   final List<Widget> _screens = [
     Home(), // Home screen
     const Favourite(), // Favourite screen
     const Profile(), // Profile screen
   ];
 
+  /// Update the selected screen based on navigation bar tap
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update the selected index
+      _selectedIndex = index;
     });
   }
 
@@ -81,8 +175,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Profile',
           ),
         ],
-        currentIndex: _selectedIndex, // Current selected index
-        onTap: _onItemTapped, // Handle tap on bottom navigation items
+        currentIndex: _selectedIndex, // Highlight the selected tab
+        onTap: _onItemTapped, // Handle navigation
       ),
     );
   }

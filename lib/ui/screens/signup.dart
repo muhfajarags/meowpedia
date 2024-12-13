@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../main.dart';
+import '../widgets/text_field.dart';
+import '../widgets/submit_button.dart';
+import '../widgets/google_sso_button.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -106,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 100),
+            const SizedBox(height:90),
             const Text(
               'Register Account',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
@@ -117,121 +120,55 @@ class _SignupScreenState extends State<SignupScreen> {
               style: TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 32),
-            const Text(
-              'Email',
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            TextField(
+            CustomTextField(
+              label: 'Email',
+              hintText: 'Enter your email',
               controller: _emailController,
               onChanged: (value) => _checkInput(),
-              decoration: InputDecoration(
-                hintText: 'Enter your email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
             ),
-            const SizedBox(height: 32),
-            const Text(
-              'Full Name',
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            TextField(
+            const SizedBox(height: 26),
+            CustomTextField(
+              label: 'Full Name',
+              hintText: 'Enter your full name',
               controller: _fullNameController,
               onChanged: (value) => _checkInput(),
-              decoration: InputDecoration(
-                hintText: 'Enter your full name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
             ),
-            const SizedBox(height: 32),
-            const Text(
-              'Password',
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            TextField(
+            const SizedBox(height: 26),
+            CustomTextField(
+              label: 'Password',
+              hintText: 'Enter your password',
               controller: _passwordController,
-              obscureText: !_isPasswordVisible,
+              isPassword: true,
+              isPasswordVisible: _isPasswordVisible,
+              onPasswordToggle: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;
+                });
+              },
               onChanged: (value) => _checkInput(),
-              decoration: InputDecoration(
-                hintText: 'Enter your password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                ),
-              ),
             ),
             const SizedBox(height: 32),
-            SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: ElevatedButton(
-                  onPressed: _isButtonEnabled ? _registerWithEmailPassword : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonEnabled
-                        ? Color(0xFF3669C9)
-                        : Colors.grey, // Warna button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Corner radius yang sama dengan input field
-                    ),
-                  ),
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ),
-              ),
+            SubmitButton(
+              text: 'Register',
+              onPressed: _isButtonEnabled ? _registerWithEmailPassword : null,
+              isEnabled: _isButtonEnabled,
+            ),
             const SizedBox(height: 30),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Atau login dengan',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                          const SizedBox(height: 30),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: OutlinedButton.icon(
-                              icon: Image.asset(
-                                'assets/google.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              label: const Text(
-                                'Google',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              onPressed: _registerWithGoogle,
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.grey),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  const Text(
+                    'Or register with',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 30),
+                  GoogleSSOButton(
+                    onPressed: _registerWithGoogle,
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
             Center(
               child: TextButton(

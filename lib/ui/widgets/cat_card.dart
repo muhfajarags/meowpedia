@@ -6,11 +6,11 @@ class CatCard extends StatelessWidget {
   final VoidCallback onFavoriteToggle;
 
   const CatCard({
-    Key? key,
+    super.key,
     required this.cat,
     required this.isLoved,
     required this.onFavoriteToggle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

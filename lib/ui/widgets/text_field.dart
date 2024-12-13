@@ -10,7 +10,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hintText,
     required this.controller,
@@ -18,7 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.isPasswordVisible = false,
     this.onPasswordToggle,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,10 @@ class CustomTextField extends StatelessWidget {
             hintText: hintText,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFF3669C9),width: 3),
             ),
             suffixIcon: isPassword
                 ? IconButton(

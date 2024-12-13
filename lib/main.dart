@@ -1,13 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:meowpedia/providers/cat_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'core/constants/app_routes.dart';
+import 'core/utils/auth_utils.dart';
+import 'providers/cat_provider.dart';
+import 'providers/profile_provider.dart';
 import 'ui/screens/home.dart';
 import 'ui/screens/favourite.dart';
 import 'ui/screens/profile.dart';
 import 'ui/screens/login.dart';
-import 'providers/profile_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,11 +36,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: AppRoutes.authWrapper,
       routes: {
-        '/': (context) => const AuthWrapper(),
-        '/login': (context) => const LoginScreen(),
-        '/main': (context) => const MainScreen(),
+        AppRoutes.authWrapper: (context) => const AuthWrapper(),
+        AppRoutes.login: (context) => const LoginScreen(),
+        AppRoutes.main: (context) => const MainScreen(),
       },
     );
   }
@@ -67,7 +68,7 @@ class AuthWrapper extends StatelessWidget {
   }
 
   Future<bool> checkLoginStatus() async {
-    final User? user = FirebaseAuth.instance.currentUser;
+    final user = getCurrentUser();
     return user != null;
   }
 }
@@ -114,6 +115,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
+        selectedItemColor: const Color(0xFF3669C9),
         onTap: _onItemTapped,
       ),
     );

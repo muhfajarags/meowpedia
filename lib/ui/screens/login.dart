@@ -1,6 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import '../../core/utils/auth_utils.dart';
 import '../../main.dart';
 import '../widgets/text_field.dart';
 import '../widgets/submit_button.dart';
@@ -29,15 +28,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginWithEmailPassword() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final user = await loginWithEmailPassword(
+        _emailController.text,
+        _passwordController.text,
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      if (!mounted) return;
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     } catch (e) {
+      if (!mounted) return;
       print('Login failed: $e');
       showDialog(
         context: context,
@@ -57,26 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        return; // User canceled the login
+      final user = await loginWithGoogle();
+      if (!mounted) return;
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
       }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
     } catch (e) {
+      if (!mounted) return;
       print('Google Sign-In failed: $e');
       showDialog(
         context: context,
@@ -156,18 +149,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 65),
               Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignupScreen()),
-                    );
-                  },
-                  child: const Text('Don’t have an account? Register'),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignupScreen()),
+                  );
+                },
+                child: const Text(
+                  'Don’t have an account? Register',
+                  style: TextStyle(
+                    color: Color(0xFF3669C9), // Mengubah warna teks
+                  ),
                 ),
               ),
+            ),
             ],
           ),
         ),

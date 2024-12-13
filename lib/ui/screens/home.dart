@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:meowpedia/core/utils/firebase_utils.dart';
+import 'package:meowpedia/core/utils/search.dart';
 import '../../providers/cat_provider.dart';
 import '../widgets/cat_card.dart';
 import '../widgets/search_field.dart';
@@ -15,8 +15,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String searchQuery = '';
-  final DatabaseReference _databaseReference =
-      FirebaseDatabase.instance.ref().child("kucing");
   List<Map<String, dynamic>> cats = [];
   String? errorMessage;
 
@@ -25,26 +23,25 @@ class _HomeState extends State<Home> {
     super.initState();
     _fetchCats();
 
-    // Listen for authentication changes and update UI accordingly
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user != null) {
-        Provider.of<CatProvider>(context, listen: false).fetchLovedCats();
-      } else {
+    listenAuthStateChanges((user) {
+      if (user == null) {
         setState(() {
-          cats.clear(); // Clear the UI state when logged out
+          cats.clear(); 
         });
+      } else {
+        Provider.of<CatProvider>(context, listen: false).fetchLovedCats();
       }
     });
   }
 
   Future<void> _fetchCats() async {
     try {
-      final snapshot = await _databaseReference.get();
-      if (snapshot.exists) {
-        final data = snapshot.value as List<dynamic>;
+      final data = await readData('kucing');
+      if (data != null) {
         setState(() {
-          cats = data.map((e) => Map<String, dynamic>.from(e as Map<Object?, Object?>)).toList();
-          errorMessage = null; // Clear error message if successful
+          cats = List<Map<String, dynamic>>.from(
+              data.map((e) => Map<String, dynamic>.from(e)));
+          errorMessage = null;
         });
       } else {
         setState(() {
@@ -62,12 +59,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final catProvider = Provider.of<CatProvider>(context);
-    final filteredCats = cats
-        .where((cat) => cat['name']
-            .toString()
-            .toLowerCase()
-            .contains(searchQuery.toLowerCase()))
-        .toList();
+    final filteredCats = filterDataByQuery(
+      data: cats,
+      query: searchQuery,
+      key: 'name',
+    );
 
     return Scaffold(
       appBar: PreferredSize(
@@ -92,7 +88,6 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Search bar
               InputField(
                 hintText: 'Search Cat Breeds',
                 onChanged: (value) {

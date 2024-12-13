@@ -1,6 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import '../../core/utils/auth_utils.dart';
 import '../../main.dart';
 import '../widgets/text_field.dart';
 import '../widgets/submit_button.dart';
@@ -30,18 +29,20 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _registerWithEmailPassword() async {
     try {
-      final UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final user = await registerWithEmailPassword(
+        _emailController.text,
+        _passwordController.text,
+        _fullNameController.text,
       );
-
-      await userCredential.user?.updateDisplayName(_fullNameController.text);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      if (!mounted) return;
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     } catch (e) {
+      if (!mounted) return;
       print('Registration failed: $e');
       showDialog(
         context: context,
@@ -61,29 +62,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _registerWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        return; // User canceled the sign-in
+      final user = await registerWithGoogle();
+      if (!mounted) return;
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
       }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      await userCredential.user?.updateDisplayName(googleUser.displayName);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
     } catch (e) {
+      if (!mounted) return;
       print('Google Registration failed: $e');
       showDialog(
         context: context,
@@ -109,10 +97,10 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height:90),
+            const SizedBox(height: 90),
             const Text(
               'Register Account',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -175,7 +163,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Already have an account? Log in'),
+                child: const Text('Already have an account? Log in',
+                style: TextStyle(
+                    color: Color(0xFF3669C9), // Mengubah warna teks
+                  ),),
               ),
             ),
           ],

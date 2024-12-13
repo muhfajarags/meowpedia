@@ -6,11 +6,11 @@ class SubmitButton extends StatelessWidget {
   final bool isEnabled;
 
   const SubmitButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.isEnabled = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

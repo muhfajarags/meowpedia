@@ -1,13 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/profile_provider.dart';
+import 'package:meowpedia/core/utils/auth_utils.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final profileProvider = Provider.of<ProfileProvider>(context);
+    final user = getCurrentUser();
+    final fullName = user?.displayName ?? 'Anonymous User';
+    final email = user?.email ?? 'No Email';
 
     return Scaffold(
       appBar: PreferredSize(
@@ -57,7 +59,7 @@ class Profile extends StatelessWidget {
             const SizedBox(height: 40),
             // Display user full name
             Text(
-              profileProvider.fullName,
+              fullName,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -66,7 +68,7 @@ class Profile extends StatelessWidget {
             const SizedBox(height: 4),
             // Display user email
             Text(
-              profileProvider.email,
+              email,
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
@@ -81,7 +83,13 @@ class Profile extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
               onPressed: () async {
-                await profileProvider.logout(context);
+                try {
+                  await FirebaseAuth.instance.signOut();
+                  if (!context.mounted) return;
+                  Navigator.of(context).pushReplacementNamed('/login');
+                } catch (e) {
+                  print('Logout failed: $e');
+                }
               },
               child: const Text(
                 'LOGOUT',

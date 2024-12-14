@@ -10,6 +10,12 @@
 - **Akses Informasi Berbagai Ras Kucing yang Lengkap** - Menyediakan deskripsi mendetail tentang lebih dari 100 ras kucing, termasuk asal-usul, karakteristik fisik, kepribadian, dan kebutuhan perawatan.  
 - **Favourite** - Simpan ras kucing favorit Anda ke dalam daftar khusus untuk akses cepat kapan saja. Ideal untuk membantu Anda membandingkan atau memilih kucing impian!  
 
+## Built With
+
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff)](#)
+[![Firebase](https://img.shields.io/badge/Firebase-039BE5?logo=Firebase&logoColor=white)](#)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+
 ## Branch Structure 🗂️
 
 Untuk kolaborasi yang efektif, kami menggunakan beberapa branch untuk setiap developer, yaitu:

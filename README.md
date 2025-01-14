@@ -10,6 +10,11 @@
 - **Akses Informasi Berbagai Ras Kucing yang Lengkap** - Menyediakan deskripsi mendetail tentang lebih dari 100 ras kucing, termasuk asal-usul, karakteristik fisik, kepribadian, dan kebutuhan perawatan.  
 - **Favourite** - Simpan ras kucing favorit Anda ke dalam daftar khusus untuk akses cepat kapan saja. Ideal untuk membantu Anda membandingkan atau memilih kucing impian!  
 
+## Download APK 📥
+
+Anda dapat mengunduh aplikasi Meowpedia melalui link berikut:  
+[Download Meowpedia](https://drive.google.com/file/d/1720F0dUsu2rJqOHFiT6pGCpOI0gZlEB4/view)
+
 ## Built With
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff)](#)
